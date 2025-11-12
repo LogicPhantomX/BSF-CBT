@@ -1,0 +1,24 @@
+[
+  {
+    "id": "d5950cd6-3f91-4e3a-98c3-1b889e7bbfc6",
+    "userId": "3180d9d1-aed2-41eb-b1f1-e92999edd206",
+    "name": "Agnes",
+    "matric": "123",
+    "role": "student",
+    "course": "PHY101_test001",
+    "score": 1,
+    "total": 1,
+    "percentage": 100,
+    "date": "2025-11-12T02:23:50.982Z",
+    "breakdown": [
+      {
+        "id": "01da9614-c1ef-40fd-a5b5-23d0ed1221f0",
+        "topic": "General",
+        "question": "Which of the following is the dimension of force",
+        "yourChoice": 1,
+        "correctIndex": 1,
+        "correct": true
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "course-8ac19ea8-23ea-4efd-a5d6-65e3a8bb75e5",
+    "name": "MTH 101",
+    "isOpen": true,
+    "durationMinutes": 60,
+    "numQuestions": 3,
+    "openAt": null,
+    "closeAt": null
+  }
+]
