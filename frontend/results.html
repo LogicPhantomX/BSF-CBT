@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Results - BSF LAUTECH CBT</title>
+  <link rel="stylesheet" href="css/style-results.css">
+  <link rel="icon" type="image/png" href="1000297344-removebg-preview.png">
+
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">BSF LAUTECH CBT</div>
+    <ul>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="results.html" class="active">Results</a></li>
+      <li><a href="#" id="logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="results-container">
+    <h2>📊 Your Results</h2>
+    <div id="resultsList" class="results-list"></div>
+  </main>
+
+<script>
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user') || 'null');
+if (!token || !user) location.href = 'login.html';
+
+document.getElementById('logout').onclick = () => {
+  localStorage.clear();
+  location.href = 'login.html';
+};
+
+async function loadResults() {
+  try {
+    const res = await fetch('/api/dashboard/results', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const results = await res.json();
+
+    const wrap = document.getElementById('resultList');
+    wrap.innerHTML = '';
+
+    if (!results.length) {
+      wrap.innerHTML = `<p>No results yet.</p>`;
+      return;
+    }
+
+    // Display latest attempt at top
+    const latest = results[results.length - 1];
+
+    // --- Score Summary ---
+    const scoreDiv = document.createElement('div');
+    scoreDiv.className = 'score-summary';
+    scoreDiv.innerHTML = `
+      <h2>${latest.course}</h2>
+      <h3>Score: ${latest.score} / ${latest.total}</h3>
+      <p>Percentage: ${latest.percentage.toFixed(1)}%</p>
+      <small>Date: ${new Date(latest.date).toLocaleString()}</small>
+      <hr>
+    `;
+    wrap.appendChild(scoreDiv);
+
+    // --- Breakdown of each question ---
+    latest.breakdown.forEach((q, index) => {
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      const isCorrect = q.correct ? '✅' : '❌';
+      const userAnswer = q.yourChoice != null ? q.yourChoice : '-';
+      card.innerHTML = `
+        <p><strong>Q${index + 1}.</strong> ${q.question}</p>
+        <ul>
+          ${q.options
+            ? q.options
+                .map(
+                  (opt, i) =>
+                    `<li style="margin-left:10px; ${
+                      i == q.correctIndex
+                        ? 'color:green;font-weight:bold;'
+                        : i == userAnswer
+                        ? 'color:red;'
+                        : ''
+                    }">${i + 1}. ${opt}</li>`
+                )
+                .join('')
+            : ''}
+        </ul>
+        <p><em>Your answer:</em> ${
+          q.options ? q.options[userAnswer] : userAnswer
+        } ${isCorrect}</p>
+        <hr>
+      `;
+      wrap.appendChild(card);
+    });
+  } catch (e) {
+    console.error(e);
+    document.getElementById('resultList').innerHTML =
+      '<p>Error loading results.</p>';
+  }
+}
+
+loadResults();
+</script>
+</body>
+</html>
+
